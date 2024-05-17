@@ -60,7 +60,7 @@ public class ClientController {
             @RequestParam(required = false) String firstname,
             @RequestParam(required = false) String lastname,
             @RequestParam(required = false) String middlename,
-            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date birthday) {
+            @RequestParam(required = false) @DateTimeFormat(pattern = "dd-MM-yyyy") Date birthday) {
         return clientService.getClients(firstname, lastname, middlename, birthday);
     }
 
