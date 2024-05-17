@@ -1,0 +1,21 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/changeset/00_contract_status_table.yaml
+  - include:
+      file: db/changelog/changeset/01_view_table.yaml
+  - include:
+      file: db/changelog/changeset/02_status_table.yaml
+  - include:
+      file: db/changelog/changeset/03_city_table.yaml
+  - include:
+      file: db/changelog/changeset/04_type_table.yaml
+  - include:
+      file: db/changelog/changeset/05_company_table.yaml
+  - include:
+      file: db/changelog/changeset/06_branch_table.yaml
+  - include:
+      file: db/changelog/changeset/07_client_table.yaml
+  - include:
+      file: db/changelog/changeset/08_user_table.yaml
+  - include:
+      file: db/changelog/changeset/09_contract_table.yaml

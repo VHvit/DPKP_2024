@@ -1,0 +1,53 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-author
+      author: Dmitriy
+      changes:
+        - createTable:
+            tableName: client
+            columns:
+              - column:
+                  name: client_id
+                  type: uuid
+                  autoIncrement: false
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: firstname
+                  type: varchar(64)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: lastname
+                  type: varchar(64)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: middlename
+                  type: varchar(64)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: birthday
+                  type: date
+                  constraints:
+                    nullable: true
+              - column:
+                  name: phone
+                  type: varchar(64)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: status_id
+                  type: uuid
+                  constraints:
+                    nullable: true
+        - addForeignKeyConstraint:
+            baseTableName: client
+            baseColumnNames: status_id
+            referencedTableName: status
+            referencedColumnNames: status_id
+            constraintName: fk_client_status
+            onDelete: CASCADE
+            onUpdate: CASCADE

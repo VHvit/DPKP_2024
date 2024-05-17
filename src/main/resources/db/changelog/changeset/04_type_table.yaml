@@ -1,0 +1,20 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-author
+      author: Dmitriy
+      changes:
+        - createTable:
+            tableName: type
+            columns:
+              - column:
+                  name: type_id
+                  type: uuid
+                  autoIncrement: false
+                  constraints:
+                    primaryKey: true
+                    nullable: true
+              - column:
+                  name: value
+                  type: varchar(64)
+                  constraints:
+                    nullable: true

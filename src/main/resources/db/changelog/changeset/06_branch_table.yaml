@@ -1,0 +1,61 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-author
+      author: Dmitriy
+      changes:
+        - createTable:
+            tableName: branch
+            columns:
+              - column:
+                  name: branch_id
+                  type: uuid
+                  autoIncrement: false
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: branch_name
+                  type: varchar(64)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: city_id
+                  type: uuid
+                  constraints:
+                    nullable: true
+              - column:
+                  name: address
+                  type: varchar(64)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: branch_phone
+                  type: varchar(64)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: employees_count
+                  type: varchar(64)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: company_id
+                  type: uuid
+                  constraints:
+                    nullable: true
+        - addForeignKeyConstraint:
+            baseTableName: branch
+            baseColumnNames: city_id
+            referencedTableName: city
+            referencedColumnNames: city_id
+            constraintName: fk_branch_city
+            onDelete: CASCADE
+            onUpdate: CASCADE
+        - addForeignKeyConstraint:
+            baseTableName: branch
+            baseColumnNames: company_id
+            referencedTableName: company
+            referencedColumnNames: company_id
+            constraintName: fk_branch_company
+            onDelete: CASCADE
+            onUpdate: CASCADE

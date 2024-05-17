@@ -1,0 +1,90 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-author
+      author: Dmitriy
+      changes:
+        - createTable:
+            tableName: contract
+            columns:
+              - column:
+                  name: contract_id
+                  type: uuid
+                  autoIncrement: false
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: summ
+                  type: varchar(64)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: date
+                  type: date
+                  constraints:
+                    nullable: true
+              - column:
+                  name: client_id
+                  type: uuid
+                  constraints:
+                    nullable: true
+              - column:
+                  name: view_id
+                  type: uuid
+                  constraints:
+                    nullable: true
+              - column:
+                  name: branch_id
+                  type: uuid
+                  constraints:
+                    nullable: true
+              - column:
+                  name: login
+                  type: varchar
+                  constraints:
+                    nullable: true
+              - column:
+                  name: contract_status_id
+                  type: uuid
+                  constraints:
+                    nullable: true
+        - addForeignKeyConstraint:
+            baseTableName: contract
+            baseColumnNames: client_id
+            referencedTableName: client
+            referencedColumnNames: client_id
+            constraintName: fk_contract_client
+            onDelete: CASCADE
+            onUpdate: CASCADE
+        - addForeignKeyConstraint:
+            baseTableName: contract
+            baseColumnNames: view_id
+            referencedTableName: view
+            referencedColumnNames: view_id
+            constraintName: fk_contract_view
+            onDelete: CASCADE
+            onUpdate: CASCADE
+        - addForeignKeyConstraint:
+            baseTableName: contract
+            baseColumnNames: branch_id
+            referencedTableName: branch
+            referencedColumnNames: branch_id
+            constraintName: fk_contract_branch
+            onDelete: CASCADE
+            onUpdate: CASCADE
+        - addForeignKeyConstraint:
+            baseTableName: contract
+            baseColumnNames: login
+            referencedTableName: user
+            referencedColumnNames: login
+            constraintName: fk_contract_user
+            onDelete: CASCADE
+            onUpdate: CASCADE
+        - addForeignKeyConstraint:
+            baseTableName: contract
+            baseColumnNames: contract_status_id
+            referencedTableName: contract_status
+            referencedColumnNames: contract_status_id
+            constraintName: fk_contract_status
+            onDelete: CASCADE
+            onUpdate: CASCADE

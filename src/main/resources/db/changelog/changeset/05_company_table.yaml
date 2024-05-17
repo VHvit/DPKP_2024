@@ -1,0 +1,56 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-author
+      author: Dmitriy
+      changes:
+        - createTable:
+            tableName: company
+            columns:
+              - column:
+                  name: company_id
+                  type: uuid
+                  autoIncrement: false
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: company_name
+                  type: varchar(64)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: license_year
+                  type: varchar(64)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: city_id
+                  type: uuid
+                  constraints:
+                    nullable: true
+              - column:
+                  name: phone
+                  type: varchar(64)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: type_id
+                  type: uuid
+                  constraints:
+                    nullable: true
+        - addForeignKeyConstraint:
+            baseTableName: company
+            baseColumnNames: city_id
+            referencedTableName: city
+            referencedColumnNames: city_id
+            constraintName: fk_company_city
+            onDelete: CASCADE
+            onUpdate: CASCADE
+        - addForeignKeyConstraint:
+            baseTableName: company
+            baseColumnNames: type_id
+            referencedTableName: type
+            referencedColumnNames: type_id
+            constraintName: fk_company_type
+            onDelete: CASCADE
+            onUpdate: CASCADE
