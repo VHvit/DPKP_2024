@@ -1,5 +1,7 @@
 package com.example.controllers;
 
+import com.example.model.EmployeeRequest;
+import com.example.model.UserRequest;
 import com.example.service.QueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -72,9 +74,9 @@ public class QueryController {
         return queryService.query_6();
     }
 
-    @GetMapping("/7/{company_id}")
-    public int query_7(@PathVariable UUID company_id) {
-        return queryService.query_7(company_id);
+    @GetMapping("/7/{branch_id}")
+    public List<Map<String, Object>> query_7(@PathVariable UUID branch_id) {
+        return queryService.query_7(branch_id);
     }
 
     @GetMapping("/8/{company_id}")
@@ -140,6 +142,51 @@ public class QueryController {
     @GetMapping("/14_4")
     public int query_14_4() {
         return queryService.query_14_4();
+    }
+
+    @PostMapping("/createEmployee")
+    public String createEmployee(@RequestBody EmployeeRequest request) {
+        queryService.createEmployee(request.getUsername(), request.getPassword(), request.getBranchId());
+        return null;
+    }
+
+    @PostMapping("/createAdmin")
+    public String createAdmin(@RequestBody UserRequest request) {
+        queryService.createAdmin(request.getUsername(), request.getPassword());
+        return null;
+    }
+
+    @PostMapping("/createStatist")
+    public String createStatist(@RequestBody UserRequest request) {
+        queryService.createStatist(request.getUsername(), request.getPassword());
+        return null;
+    }
+
+    @PutMapping("/updateUser")
+    public String updateUser(@RequestBody UserRequest request) {
+        queryService.updateUser(request.getUsername(), request.getPassword());
+        return null;
+    }
+
+    @DeleteMapping("/deleteUser/{username}")
+    public String deleteUser(@PathVariable String username) {
+        queryService.deleteUser(username);
+        return null;
+    }
+
+    @GetMapping("/employee")
+    public List<String> getEmployee() {
+        return queryService.getEmployee();
+    }
+
+    @GetMapping("/admin")
+    public List<String> getAdmin() {
+        return queryService.getAdmin();
+    }
+
+    @GetMapping("/statist")
+    public List<String> getStatist() {
+        return queryService.getStatist();
     }
 
 }

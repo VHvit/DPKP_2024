@@ -41,7 +41,7 @@ public class QueryService {
                 "JOIN \"insurance\".\"contract\" AS co ON b.branch_id = co.branch_id " +
                 "JOIN \"insurance\".\"client\" AS cl ON co.client_id = cl.client_id " +
                 "JOIN \"insurance\".\"status\" AS s ON cl.status_id = s.status_id " +
-                "WHERE co.date >= ? ";
+                "WHERE co.date > ? ";
 
         return jdbcTemplate.queryForObject(sql, new Object[]{date}, Integer.class);
     }
@@ -53,7 +53,7 @@ public class QueryService {
                 "JOIN \"insurance\".\"contract\" AS co ON b.branch_id = co.branch_id " +
                 "JOIN \"insurance\".\"client\" AS cl ON co.client_id = cl.client_id " +
                 "JOIN \"insurance\".\"status\" AS s ON cl.status_id = s.status_id " +
-                "WHERE co.date <= ? ";
+                "WHERE co.date < ? ";
 
         return jdbcTemplate.queryForObject(sql, new Object[]{date}, Integer.class);
     }
@@ -123,26 +123,17 @@ public class QueryService {
         return jdbcTemplate.queryForObject(sql, Integer.class);
     }
 
-    public int query_7(UUID company_id) {
-        String sql = "SELECT COUNT(ct.contract_id) AS contract_count " +
-                "FROM \"insurance\".\"company\" AS c " +
-                "JOIN \"insurance\".\"branch\" AS b ON c.company_id = b.company_id " +
-                "JOIN \"insurance\".\"contract\" AS ct ON b.branch_id = ct.branch_id " +
-                "WHERE c.company_id = ? " +
-                "GROUP BY c.company_id, c.company_name";
+    public List<Map<String, Object>> query_7(UUID company_id) {
+        String sql = "SELECT b.branch_name, COALESCE(SUM(CAST(ct.summ AS NUMERIC)), 0) AS total_contracts_sum " +
+                "FROM \"insurance\".\"branch\" b " +
+                "LEFT JOIN \"insurance\".\"contract\" ct ON b.branch_id = ct.branch_id " +
+                "WHERE b.branch_id = ? " +
+                "GROUP BY b.branch_name";
 
-        List<Integer> result = jdbcTemplate.queryForList(sql, new Object[]{company_id}, Integer.class);
+        List<Map<String, Object>> result = jdbcTemplate.queryForList(sql, new Object[]{company_id});
 
-        // Проверяем, есть ли результаты запроса
-        if (!result.isEmpty()) {
-            // Возвращаем первый элемент списка, так как он содержит результат COUNT
-            return result.get(0);
-        } else {
-            // Если результаты запроса пусты, возвращаем 0 или обрабатываем по вашему усмотрению
-            return 0;
-        }
+        return result;
     }
-
 
     public List<Map<String, Object>> query_8(UUID company_id) {
         String sql = "SELECT c.company_name, COALESCE(SUM(CAST(ct.summ AS NUMERIC)), 0) AS total_contracts_sum " +
@@ -289,5 +280,75 @@ public class QueryService {
         return jdbcTemplate.queryForObject(sql, Integer.class);
     }
 
+    public void createEmployee(String username, String password, String branchId) {
+        String sql = "CREATE USER " + username + " WITH PASSWORD '" + password + "'; " +
+                "GRANT employee TO " + username + ";" +
+                "INSERT INTO \"insurance\".\"user\" (login, branch_id) VALUES ('" + username + "', '" + branchId + "')";
 
+        jdbcTemplate.update(sql);
+    }
+
+    public void createAdmin(String username, String password) {
+        String sql = "CREATE USER " + username + " WITH PASSWORD '" + password + "'; " +
+                "GRANT admin TO " + username + ";" +
+                "ALTER USER " + username + " WITH SUPERUSER" +
+                "ALTER USER " + username + " WITH CREATEROLE";
+
+        jdbcTemplate.update(sql);
+    }
+
+    public void createStatist(String username, String password) {
+        String sql = "CREATE USER " + username + " WITH PASSWORD '" + password + "'; " +
+                "GRANT statist TO " + username + ";";
+
+        jdbcTemplate.update(sql);
+    }
+
+    public void updateUser(String username, String password) {
+        String sql = "ALTER USER " + username + " WITH PASSWORD '" + password + "'; ";
+
+        jdbcTemplate.update(sql);
+    }
+
+    public void deleteUser(String username) {
+        String deleteUserSql = "DROP USER " + username;
+        jdbcTemplate.update(deleteUserSql);
+
+        String deleteInsuranceUserSql = "DELETE FROM \"insurance\".\"user\" WHERE login = '" + username + "';";
+        jdbcTemplate.update(deleteInsuranceUserSql);
+    }
+
+
+    public List<String> getEmployee() {
+        String sql = "SELECT r.rolname AS role_name " +
+                "FROM pg_catalog.pg_roles r " +
+                "JOIN pg_catalog.pg_auth_members m ON r.oid = m.member " +
+                "JOIN pg_catalog.pg_roles ri ON m.roleid = ri.oid " +
+                "WHERE ri.rolname = 'employee' " +
+                "ORDER BY ri.rolname ASC";
+
+        return jdbcTemplate.queryForList(sql, String.class);
+    }
+
+    public List<String> getAdmin() {
+        String sql = "SELECT r.rolname AS role_name " +
+                "FROM pg_catalog.pg_roles r " +
+                "JOIN pg_catalog.pg_auth_members m ON r.oid = m.member " +
+                "JOIN pg_catalog.pg_roles ri ON m.roleid = ri.oid " +
+                "WHERE ri.rolname = 'admin' " +
+                "ORDER BY ri.rolname ASC";
+
+        return jdbcTemplate.queryForList(sql, String.class);
+    }
+
+    public List<String> getStatist() {
+        String sql = "SELECT r.rolname AS role_name " +
+                "FROM pg_catalog.pg_roles r " +
+                "JOIN pg_catalog.pg_auth_members m ON r.oid = m.member " +
+                "JOIN pg_catalog.pg_roles ri ON m.roleid = ri.oid " +
+                "WHERE ri.rolname = 'statist' " +
+                "ORDER BY ri.rolname ASC";
+
+        return jdbcTemplate.queryForList(sql, String.class);
+    }
 }
